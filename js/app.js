@@ -1,3 +1,17 @@
+const WHATSAPP_NUMBER = "5218120106311";
+
+function getWhatsAppLink(product) {
+
+  const message =
+    `Hola! Me interesa la prenda ${product.id} - ${product.nombre}. ` +
+    `¿Sigue disponible?`;
+
+  return (
+    `https://wa.me/${WHATSAPP_NUMBER}` +
+    `?text=${encodeURIComponent(message)}`
+  );
+}
+
 let products = [];
 
 const SHEET_ID = "14Xm9vVfCgUi-vs2wUDkvieD_kRiR-MDkWTbH_TKEAdE";
@@ -187,6 +201,28 @@ function renderProducts(productList) {
         <p class="product-price">
           $${product.precio}
         </p>
+
+        ${
+          sold
+            ? `
+              <button
+                class="contact-button sold-button"
+                disabled
+              >
+                Vendido
+              </button>
+            `
+            : `
+              <a
+                href="${getWhatsAppLink(product)}"
+                class="contact-button"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Me interesa
+              </a>
+            `
+        }
 
       </div>
     `;

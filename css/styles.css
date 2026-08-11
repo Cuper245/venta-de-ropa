@@ -295,3 +295,44 @@ body {
   }
 
 }
+
+/* Contacto */
+
+.contact-button {
+  display: block;
+
+  margin-top: 12px;
+
+  padding: 11px 14px;
+
+  border-radius: 8px;
+
+  background: #111;
+  color: white;
+
+  text-decoration: none;
+  text-align: center;
+
+  font-size: 0.9rem;
+  font-weight: 600;
+
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.contact-button:hover {
+  opacity: 0.85;
+  transform: translateY(-1px);
+}
+
+.sold-button {
+  width: 100%;
+
+  border: none;
+
+  background: #dddddd;
+  color: #777777;
+
+  cursor: not-allowed;
+}
