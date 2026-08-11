@@ -1,7 +1,6 @@
 const WHATSAPP_NUMBER = "5218120106311";
 
 function getWhatsAppLink(product) {
-
   const message =
     `Hola! Me interesa la prenda ${product.id} - ${product.nombre}. ` +
     `¿Sigue disponible?`;
@@ -12,15 +11,135 @@ function getWhatsAppLink(product) {
   );
 }
 
+const productModal =
+  document.getElementById("productModal");
+
+const modalBody =
+  document.getElementById("modalBody");
+
+
 let products = [];
 
-const SHEET_ID = "14Xm9vVfCgUi-vs2wUDkvieD_kRiR-MDkWTbH_TKEAdE";
-const SHEET_GID = "2108941421";
+const SHEET_ID =
+  "14Xm9vVfCgUi-vs2wUDkvieD_kRiR-MDkWTbH_TKEAdE";
+
+const SHEET_GID =
+  "2108941421";
 
 const SHEET_URL =
   `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq` +
   `?gid=${SHEET_GID}&tqx=out:json`;
 
+
+
+function openProductModal(product) {
+
+  const availability =
+    String(product.disponible)
+      .toLowerCase()
+      .trim();
+
+  const sold =
+    availability === "vendida" ||
+    availability === "vendido";
+
+  modalBody.innerHTML = `
+    <div class="product-detail">
+
+      <div class="product-detail-image-wrapper">
+
+        <img
+          src="${product.foto1}"
+          alt="${product.nombre}"
+          class="product-detail-image"
+        >
+
+        ${
+          sold
+            ? `<div class="sold-banner">VENDIDO</div>`
+            : ""
+        }
+
+      </div>
+
+      <div class="product-detail-info">
+
+        <p class="product-detail-id">
+          ${product.id}
+        </p>
+
+        <h2>
+          ${product.nombre}
+        </h2>
+
+        <p class="product-detail-price">
+          $${product.precio}
+        </p>
+
+        <div class="product-details-list">
+
+          <p>
+            <strong>Marca:</strong>
+            ${product.marca || "-"}
+          </p>
+
+          <p>
+            <strong>Talla:</strong>
+            ${product.talla || "-"}
+          </p>
+
+          <p>
+            <strong>Color:</strong>
+            ${product.color || "-"}
+          </p>
+
+          <p>
+            <strong>Estado:</strong>
+            ${product.estado || "-"}
+          </p>
+
+        </div>
+
+        ${
+          product.descripcion
+            ? `
+              <p class="product-description">
+                ${product.descripcion}
+              </p>
+            `
+            : ""
+        }
+
+        ${
+          sold
+            ? `
+              <button
+                class="contact-button sold-button"
+                disabled
+              >
+                Vendido
+              </button>
+            `
+            : `
+              <a
+                href="${getWhatsAppLink(product)}"
+                class="contact-button"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Me interesa por WhatsApp
+              </a>
+            `
+        }
+
+      </div>
+
+    </div>
+  `;
+
+  productModal.classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+}
 
 async function loadProducts() {
   try {
@@ -202,30 +321,23 @@ function renderProducts(productList) {
           $${product.precio}
         </p>
 
-        ${
-          sold
-            ? `
-              <button
-                class="contact-button sold-button"
-                disabled
-              >
-                Vendido
-              </button>
-            `
-            : `
-              <a
-                href="${getWhatsAppLink(product)}"
-                class="contact-button"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Me interesa
-              </a>
-            `
-        }
-
       </div>
     `;
+
+    
+
+    card.addEventListener("click", () => {
+      openProductModal(product);
+    });
+
+    const contactButton =
+      card.querySelector(".contact-button");
+
+    if (contactButton) {
+      contactButton.addEventListener("click", event => {
+        event.stopPropagation();
+      });
+    }
 
     productsContainer.appendChild(card);
 
@@ -233,6 +345,29 @@ function renderProducts(productList) {
 
 }
 
+function closeProductModal() {
+  productModal.classList.add("hidden");
+  document.body.style.overflow = "";
+}
+
+document
+  .querySelectorAll("[data-close-modal]")
+  .forEach(element => {
+
+    element.addEventListener(
+      "click",
+      closeProductModal
+    );
+
+  });
+
+document.addEventListener("keydown", event => {
+
+  if (event.key === "Escape") {
+    closeProductModal();
+  }
+
+});
 
 function filterProducts() {
 
