@@ -49,7 +49,7 @@ async function loadProducts() {
           descripcion: cells[8],
           disponible: cells[9],
           fechaPublicacion: cells[10],
-          foto1: cells[11]
+          foto1: `images/${cells[0]}.jpeg`
         };
 
       })
@@ -212,11 +212,11 @@ function filterProducts() {
     products.filter(product => {
 
       const matchesSearch =
-        product.nombre
+        String(product.nombre)
           .toLowerCase()
           .includes(search)
         ||
-        product.marca
+        String(product.marca)
           .toLowerCase()
           .includes(search);
 
