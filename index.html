@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="Catálogo de ropa en venta"
+  >
+
+  <title>Venta de Ropa</title>
+
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+  <header class="header">
+    <div class="container">
+      <h1>Venta de Ropa</h1>
+      <p>Encuentra algo que te guste ♡</p>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <section class="controls">
+
+      <input
+        type="search"
+        id="searchInput"
+        placeholder="Buscar prendas..."
+        autocomplete="off"
+      >
+
+      <select id="categoryFilter">
+        <option value="todas">Todas las categorías</option>
+      </select>
+
+    </section>
+
+    <section>
+      <p id="productCount" class="product-count"></p>
+
+      <div id="products" class="products-grid"></div>
+    </section>
+
+  </main>
+
+  <div id="productModal" class="modal hidden">
+    <div class="modal-overlay" data-close-modal></div>
+
+    <div class="modal-content">
+
+      <button
+        class="modal-close"
+        data-close-modal
+        aria-label="Cerrar"
+      >
+        ×
+      </button>
+
+      <div id="modalBody"></div>
+
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+
+</body>
+</html>
