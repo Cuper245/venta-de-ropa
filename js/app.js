@@ -43,6 +43,10 @@ function openProductModal(product) {
     availability === "vendida" ||
     availability === "vendido";
 
+  const reserved =
+    availability === "reservada" ||
+    availability === "reservado";
+
   modalBody.innerHTML = `
     <div class="product-detail">
 
@@ -56,8 +60,10 @@ function openProductModal(product) {
 
         ${
           sold
-            ? `<div class="sold-banner">VENDIDO</div>`
-            : ""
+            ? `<div class="status-banner sold-banner">VENDIDO</div>`
+            : reserved
+              ? `<div class="status-banner reserved-banner">RESERVADO</div>`
+              : ""
         }
 
       </div>
@@ -113,23 +119,32 @@ function openProductModal(product) {
         ${
           sold
             ? `
-              <button
-                class="contact-button sold-button"
-                disabled
-              >
-                Vendido
-              </button>
-            `
-            : `
-              <a
-                href="${getWhatsAppLink(product)}"
-                class="contact-button"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Me interesa por WhatsApp
-              </a>
-            `
+                <button
+                  class="contact-button sold-button"
+                  disabled
+                >
+                  Vendido
+                </button>
+              `
+            : reserved
+              ? `
+                  <button
+                    class="contact-button sold-button"
+                    disabled
+                  >
+                    Reservado
+                  </button>
+                `
+              : `
+                  <a
+                    href="${getWhatsAppLink(product)}"
+                    class="contact-button"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Me interesa por WhatsApp
+                  </a>
+                `
         }
 
       </div>
@@ -193,6 +208,7 @@ async function loadProducts() {
       );
 
     createCategories();
+    createSizes();
     renderProducts(products);
 
   } catch (error) {
@@ -219,8 +235,50 @@ const searchInput =
 const categoryFilter =
   document.getElementById("categoryFilter");
 
+const sizeFilter =
+  document.getElementById("sizeFilter");
+
+const priceFilter =
+  document.getElementById("priceFilter");
+
+const mobileFilterButton =
+  document.getElementById("mobileFilterButton");
+
+const filterPanel =
+  document.getElementById("filterPanel");
+
 const productCount =
   document.getElementById("productCount");
+
+function createSizes() {
+
+  sizeFilter.innerHTML = `
+    <option value="todas">
+      Todas las tallas
+    </option>
+  `;
+
+  const sizes = [
+    ...new Set(
+      products
+        .map(product => String(product.talla).trim())
+        .filter(Boolean)
+    )
+  ];
+
+  sizes.forEach(size => {
+
+    const option =
+      document.createElement("option");
+
+    option.value = size;
+    option.textContent = `Talla ${size}`;
+
+    sizeFilter.appendChild(option);
+
+  });
+
+}
 
 
 function createCategories() {
@@ -253,16 +311,51 @@ function createCategories() {
 
 }
 
+function sortProducts(productList) {
+  const statusPriority = {
+    "si": 0,
+    "sí": 0,
+    "disponible": 0,
 
+    "reservada": 1,
+    "reservado": 1,
+
+    "vendida": 2,
+    "vendido": 2
+  };
+
+  return [...productList].sort((a, b) => {
+    const statusA =
+      String(a.disponible)
+        .toLowerCase()
+        .trim();
+
+    const statusB =
+      String(b.disponible)
+        .toLowerCase()
+        .trim();
+
+    const priorityA =
+      statusPriority[statusA] ?? 0;
+
+    const priorityB =
+      statusPriority[statusB] ?? 0;
+
+    return priorityA - priorityB;
+  });
+}
 
 function renderProducts(productList) {
 
   productsContainer.innerHTML = "";
 
-  productCount.textContent =
-    `${productList.length} prendas`;
+  const sortedProducts =
+    sortProducts(productList);
 
-  productList.forEach(product => {
+  productCount.textContent =
+    `${sortedProducts.length} prendas`;
+
+  sortedProducts.forEach(product => {
 
     const availability =
       String(product.disponible)
@@ -273,11 +366,15 @@ function renderProducts(productList) {
       availability === "vendida" ||
       availability === "vendido";
 
+    const reserved =
+      availability === "reservada" ||
+      availability === "reservado";
+
     const card =
       document.createElement("article");
 
     card.className =
-      `product-card ${sold ? "sold" : ""}`;
+      `product-card ${sold ? "sold" : ""} ${reserved ? "reserved" : ""}`;
 
     const image = product.foto1
         ? `
@@ -301,13 +398,19 @@ function renderProducts(productList) {
 
         ${
           sold
-            ? `<div class="sold-banner">VENDIDO</div>`
-            : ""
+            ? `<div class="status-banner sold-banner">VENDIDO</div>`
+            : reserved
+              ? `<div class="status-banner reserved-banner">RESERVADO</div>`
+              : ""
         }
 
       </div>
 
       <div class="product-info">
+
+        <p class="product-code">
+          ${product.id}
+        </p>
 
         <h2 class="product-name">
           ${product.nombre}
@@ -369,6 +472,28 @@ document.addEventListener("keydown", event => {
 
 });
 
+function updateFilterButton() {
+
+  let activeFilters = 0;
+
+  if (categoryFilter.value !== "todas") {
+    activeFilters++;
+  }
+
+  if (sizeFilter.value !== "todas") {
+    activeFilters++;
+  }
+
+  if (priceFilter.value !== "todas") {
+    activeFilters++;
+  }
+
+  mobileFilterButton.textContent =
+    activeFilters > 0
+      ? `Filtros (${activeFilters})`
+      : "Filtros";
+}
+
 function filterProducts() {
 
   const search =
@@ -378,6 +503,12 @@ function filterProducts() {
 
   const category =
     categoryFilter.value;
+
+  const size =
+    sizeFilter.value;
+
+  const priceRange =
+    priceFilter.value;
 
   const filtered =
     products.filter(product => {
@@ -395,15 +526,48 @@ function filterProducts() {
         category === "todas"
         ||
         product.categoria === category;
+      
+      const matchesSize =
+        size === "todas"
+        ||
+        String(product.talla).trim() === size;
+
+      const price =
+        Number(product.precio);
+
+      let matchesPrice = true;
+
+      if (priceRange === "0-100") {
+        matchesPrice = price <= 100;
+      }
+
+      if (priceRange === "101-200") {
+        matchesPrice = price >= 101 && price <= 200;
+      }
+
+      if (priceRange === "201-300") {
+        matchesPrice = price >= 201 && price <= 300;
+      }
+
+      if (priceRange === "301-500") {
+        matchesPrice = price >= 301 && price <= 500;
+      }
+
+      if (priceRange === "501+") {
+        matchesPrice = price >= 501;
+      }
 
       return (
         matchesSearch &&
-        matchesCategory
+        matchesCategory &&
+        matchesSize &&
+        matchesPrice
       );
 
     });
 
   renderProducts(filtered);
+  updateFilterButton();
 
 }
 
@@ -417,5 +581,20 @@ categoryFilter.addEventListener(
   "change",
   filterProducts
 );
+
+sizeFilter.addEventListener(
+  "change",
+  filterProducts
+);
+
+priceFilter.addEventListener(
+  "change",
+  filterProducts
+);
+
+mobileFilterButton.addEventListener("click", () => {
+  filterPanel.classList.toggle("open");
+});
+
 
 loadProducts();

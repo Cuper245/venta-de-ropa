@@ -38,9 +38,34 @@
         autocomplete="off"
       >
 
-      <select id="categoryFilter">
-        <option value="todas">Todas las categorías</option>
-      </select>
+      <button
+        id="mobileFilterButton"
+        class="mobile-filter-button"
+        type="button"
+      >
+        Filtros
+      </button>
+
+      <div id="filterPanel" class="filter-panel">
+
+        <select id="categoryFilter">
+          <option value="todas">Todas las categorías</option>
+        </select>
+
+        <select id="sizeFilter">
+          <option value="todas">Todas las tallas</option>
+        </select>
+
+        <select id="priceFilter">
+          <option value="todas">Todos los precios</option>
+          <option value="0-100">Hasta $100</option>
+          <option value="101-200">$101 - $200</option>
+          <option value="201-300">$201 - $300</option>
+          <option value="301-500">$301 - $500</option>
+          <option value="501+">Más de $500</option>
+        </select>
+
+      </div>
 
     </section>
 

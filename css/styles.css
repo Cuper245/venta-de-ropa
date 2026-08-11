@@ -16,6 +16,7 @@ body {
   margin: 0;
 
   font-family:
+    Inter,
     -apple-system,
     BlinkMacSystemFont,
     "Segoe UI",
@@ -26,6 +27,8 @@ body {
 
   background: var(--background);
   color: var(--text);
+
+  line-height: 1.5;
 }
 
 .container {
@@ -37,59 +40,96 @@ body {
 /* HEADER */
 
 .header {
-  padding: 40px 0 30px;
+  padding: 52px 0 34px;
   text-align: center;
 }
 
 .header h1 {
   margin: 0;
-  font-size: clamp(2rem, 5vw, 3.2rem);
+
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
   font-weight: 600;
+
+  letter-spacing: -0.03em;
 }
 
 .header p {
   margin: 10px 0 0;
+
   color: var(--secondary-text);
-}
-
-
-/* CONTROLS */
-
-.controls {
-  display: flex;
-  gap: 12px;
-
-  margin-bottom: 24px;
-}
-
-.controls input,
-.controls select {
-  height: 46px;
-
-  border: 1px solid var(--border);
-  border-radius: 10px;
-
-  background: white;
-  padding: 0 14px;
 
   font-size: 1rem;
 }
 
-.controls input {
-  flex: 1;
+/* CONTROLS */
+
+.controls {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+
+  margin-bottom: 30px;
 }
 
+.filter-panel {
+  grid-column: 1 / -1;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 12px;
+}
+
+.mobile-filter-button {
+  display: none;
+
+  height: 48px;
+  padding: 0 18px;
+
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  background: white;
+  color: var(--text);
+
+  font-size: 0.95rem;
+  font-weight: 500;
+
+  cursor: pointer;
+}
+
+.controls input,
 .controls select {
-  min-width: 200px;
+  height: 48px;
+
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  background: white;
+
+  padding: 0 15px;
+
+  font-size: 0.95rem;
+
+  outline: none;
+}
+
+.controls input:focus,
+.controls select:focus {
+  border-color: #999;
 }
 
 
 /* PRODUCT COUNT */
 
 .product-count {
+  margin: 0 0 20px;
+
   color: var(--secondary-text);
-  margin-bottom: 18px;
+
+  font-size: 0.9rem;
 }
+
 
 
 /* GRID */
@@ -100,9 +140,9 @@ body {
   grid-template-columns:
     repeat(4, minmax(0, 1fr));
 
-  gap: 28px 18px;
+  gap: 36px 20px;
 
-  padding-bottom: 60px;
+  padding-bottom: 70px;
 }
 
 
@@ -120,7 +160,7 @@ body {
   overflow: hidden;
 
   background: var(--surface);
-  border-radius: 8px;
+  border-radius: 12px;
 }
 
 .product-image {
@@ -133,27 +173,30 @@ body {
 }
 
 .product-info {
-  padding-top: 10px;
+  padding-top: 12px;
 }
 
 .product-name {
-  margin: 0 0 4px;
+  margin: 0 0 5px;
 
   font-size: 1rem;
   font-weight: 500;
+
+  line-height: 1.3;
 }
 
 .product-meta {
   margin: 0;
 
   color: var(--secondary-text);
-  font-size: 0.9rem;
+
+  font-size: 0.88rem;
 }
 
 .product-price {
-  margin: 7px 0 0;
+  margin: 9px 0 0;
 
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 600;
 }
 
@@ -182,24 +225,39 @@ body {
   filter: grayscale(40%);
 }
 
-.sold-banner {
+.product-card.reserved .product-image-wrapper {
+  background: #e9e9e9;
+}
+
+.product-card.reserved .product-image {
+  opacity: 0.75;
+}
+
+.status-banner {
   position: absolute;
-  top: 16px;
+  top: 165px;
   left: 0;
   right: 0;
 
   z-index: 2;
 
-  padding: 10px;
+  padding: 15px;
 
-  background: rgba(17, 17, 17, 0.9);
   color: white;
 
   text-align: center;
 
-  font-size: 0.85rem;
+  font-size: 1.1rem;
   font-weight: 700;
   letter-spacing: 0.15em;
+}
+
+.sold-banner {
+  background: rgba(162, 1, 1, 0.9);
+}
+
+.reserved-banner {
+  background: rgba(90, 90, 90, 0.9);
 }
 
 
@@ -407,20 +465,54 @@ body {
   line-height: 1.6;
 }
 
+.product-code {
+  margin: 0 0 5px;
 
-@media (max-width: 700px) {
+  color: #999;
 
-  .product-detail {
+  font-size: 0.72rem;
+  font-weight: 500;
+
+  letter-spacing: 0.08em;
+}
+
+@media (max-width: 600px) {
+
+  .mobile-filter-button {
+    display: block;
+  }
+
+  .filter-panel {
+    display: none;
     grid-template-columns: 1fr;
-    gap: 20px;
   }
 
-  .modal-content {
-    padding: 18px;
+  .filter-panel.open {
+    display: grid;
   }
 
-  .product-detail-info {
-    padding: 0;
+  .header {
+    padding: 34px 0 24px;
+  }
+
+  .header h1 {
+    font-size: 2rem;
+  }
+
+  .products-grid {
+    gap: 28px 12px;
+  }
+
+  .product-name {
+    font-size: 0.95rem;
+  }
+
+  .product-meta {
+    font-size: 0.82rem;
+  }
+
+  .product-price {
+    font-size: 0.98rem;
   }
 
 }
