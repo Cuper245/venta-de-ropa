@@ -32,7 +32,10 @@ const SHEET_URL =
 
 
 
-function openProductModal(product) {
+function openProductModal(
+  product,
+  updateUrl = true
+) {
 
   const availability =
     String(product.disponible)
@@ -138,10 +141,21 @@ function openProductModal(product) {
               : `
                   <a
                     href="${getWhatsAppLink(product)}"
-                    class="contact-button"
+                    class="contact-button whatsapp-button"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
+                    <svg
+                      class="whatsapp-icon"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path
+                        fill="currentColor"
+                        d="M12 2a9.9 9.9 0 0 0-8.49 15.01L2 22l5.13-1.46A9.98 9.98 0 1 0 12 2Zm0 18a7.9 7.9 0 0 1-4.02-1.1l-.29-.17-3.04.86.87-2.96-.19-.3A8 8 0 1 1 12 20Zm4.37-5.95c-.24-.12-1.42-.7-1.64-.78-.22-.08-.38-.12-.54.12-.16.24-.62.78-.76.94-.14.16-.28.18-.52.06-.24-.12-1.01-.37-1.92-1.18-.71-.63-1.19-1.41-1.33-1.65-.14-.24-.02-.37.1-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.47-.4-.4-.54-.41h-.46c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.69 2.58 4.1 3.62.57.25 1.02.4 1.37.51.58.18 1.1.16 1.51.1.46-.07 1.42-.58 1.62-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.46-.28Z"
+                      />
+                    </svg>
+
                     Me interesa por WhatsApp
                   </a>
                 `
@@ -154,6 +168,24 @@ function openProductModal(product) {
 
   productModal.classList.remove("hidden");
   document.body.style.overflow = "hidden";
+
+  if (updateUrl) {
+
+    const url =
+      new URL(window.location.href);
+
+    url.searchParams.set(
+      "producto",
+      product.id
+    );
+
+    window.history.pushState(
+      {},
+      "",
+      url
+    );
+
+  }
 }
 
 async function loadProducts() {
@@ -210,6 +242,25 @@ async function loadProducts() {
     createCategories();
     createSizes();
     renderProducts(products);
+
+    const productId =
+      getProductFromUrl();
+
+    if (productId) {
+
+      const product =
+        products.find(item =>
+          String(item.id)
+            .toLowerCase() ===
+          String(productId)
+            .toLowerCase()
+        );
+
+      if (product) {
+        openProductModal(product, false);
+      }
+
+    }
 
   } catch (error) {
 
@@ -280,6 +331,10 @@ function createSizes() {
 
 }
 
+function getProductFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("producto");
+}
 
 function createCategories() {
 
@@ -449,8 +504,20 @@ function renderProducts(productList) {
 }
 
 function closeProductModal() {
+
   productModal.classList.add("hidden");
   document.body.style.overflow = "";
+
+  const url =
+    new URL(window.location.href);
+
+  url.searchParams.delete("producto");
+
+  window.history.pushState(
+    {},
+    "",
+    url
+  );
 }
 
 document
@@ -571,6 +638,35 @@ function filterProducts() {
 
 }
 
+window.addEventListener(
+  "popstate",
+  () => {
+
+    const productId =
+      getProductFromUrl();
+
+    if (!productId) {
+
+      productModal.classList.add("hidden");
+      document.body.style.overflow = "";
+
+      return;
+    }
+
+    const product =
+      products.find(item =>
+        String(item.id)
+          .toLowerCase() ===
+        String(productId)
+          .toLowerCase()
+      );
+
+    if (product) {
+      openProductModal(product, false);
+    }
+
+  }
+);
 
 searchInput.addEventListener(
   "input",

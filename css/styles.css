@@ -142,7 +142,7 @@ body {
 
   gap: 36px 20px;
 
-  padding-bottom: 70px;
+  padding-bottom: 10px;
 }
 
 
@@ -235,7 +235,7 @@ body {
 
 .status-banner {
   position: absolute;
-  top: 165px;
+  top: 105px;
   left: 0;
   right: 0;
 
@@ -320,39 +320,7 @@ body {
 }
 
 
-/* MOBILE */
 
-@media (max-width: 850px) {
-
-  .products-grid {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
-
-    gap: 24px 12px;
-  }
-
-}
-
-
-@media (max-width: 600px) {
-
-  .header {
-    padding-top: 28px;
-  }
-
-  .controls {
-    flex-direction: column;
-  }
-
-  .controls select {
-    width: 100%;
-  }
-
-  .product-name {
-    font-size: 0.92rem;
-  }
-
-}
 
 /* Contacto */
 
@@ -476,6 +444,63 @@ body {
   letter-spacing: 0.08em;
 }
 
+.site-footer {
+  border-top: 1px solid #d8d8d8;
+  padding: 16px 0 20px;
+
+  background: #fafafa;
+}
+
+.footer-content {
+  text-align: center;
+  max-width: 700px;
+}
+
+.site-footer h2 {
+  margin: 0 0 10px;
+
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.site-footer p {
+  margin: 0 auto;
+
+  color: var(--secondary-text);
+
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.footer-note {
+  margin-top: 10px !important;
+
+  font-size: 0.82rem !important;
+  color: #999 !important;
+}
+
+.footer-divider {
+  width: min(92%, var(--max-width));
+  height: 1px;
+
+  margin: 20px auto 0;
+
+  background: #d0d0d0;
+}
+
+.whatsapp-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.whatsapp-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
 @media (max-width: 600px) {
 
   .mobile-filter-button {
@@ -513,6 +538,40 @@ body {
 
   .product-price {
     font-size: 0.98rem;
+  }
+
+}
+
+/* MOBILE */
+
+@media (max-width: 850px) {
+
+  .products-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+
+    gap: 24px 12px;
+  }
+
+}
+
+
+@media (max-width: 600px) {
+
+  .header {
+    padding-top: 28px;
+  }
+
+  .controls {
+    flex-direction: column;
+  }
+
+  .controls select {
+    width: 100%;
+  }
+
+  .product-name {
+    font-size: 0.92rem;
   }
 
 }
