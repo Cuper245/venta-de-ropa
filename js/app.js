@@ -229,7 +229,7 @@ async function loadProducts() {
           descripcion: cells[8],
           disponible: cells[9],
           fechaPublicacion: cells[10],
-          foto1: `images/${cells[0]}.jpeg`
+          foto1: `images_web/${cells[0]}.webp`
         };
 
       })
@@ -434,10 +434,11 @@ function renderProducts(productList) {
     const image = product.foto1
         ? `
             <img
-            src="${product.foto1}"
-            alt="${product.nombre}"
-            class="product-image"
-            loading="lazy"
+              src="${product.foto1}"
+              alt="${product.nombre}"
+              class="product-image"
+              loading="lazy"
+              decoding="async"
             >
         `
         : `
